@@ -39,22 +39,33 @@ local TOTAL_LAPS        = 3
 local ITEM_RESPAWN_TIME = 10
 local ITEM_TYPES        = { "SpeedBoost", "Shield" }
 
+local rng = Random.new()
+
 -- =====================
 --    CREATE FOLDERS
 -- =====================
 -- We make sure the Track folder exists (or create it). This keeps everything organized
 -- and makes it easier to clean up or find things in Studio later.
 local trackFolder = workspace:FindFirstChild("Track")
-    or Instance.new("Folder", workspace)
-trackFolder.Name = "Track"
+if not trackFolder then
+    trackFolder      = Instance.new("Folder")
+    trackFolder.Name = "Track"
+    trackFolder.Parent = workspace
+end
 
 local checkpointsFolder = trackFolder:FindFirstChild("Checkpoints")
-    or Instance.new("Folder", trackFolder)
-checkpointsFolder.Name = "Checkpoints"
+if not checkpointsFolder then
+    checkpointsFolder        = Instance.new("Folder")
+    checkpointsFolder.Name   = "Checkpoints"
+    checkpointsFolder.Parent = trackFolder
+end
 
 local itemsFolder = trackFolder:FindFirstChild("Items")
-    or Instance.new("Folder", trackFolder)
-itemsFolder.Name = "Items"
+if not itemsFolder then
+    itemsFolder        = Instance.new("Folder")
+    itemsFolder.Name   = "Items"
+    itemsFolder.Parent = trackFolder
+end
 
 -- =====================
 --  CREATE CHECKPOINTS
@@ -130,8 +141,9 @@ Players.PlayerAdded:Connect(function(player)
     }
     
     -- Small delay so the client has time to load before we tell it what to show
-    task.wait(3)
-    ShowNextCheckpoint:FireClient(player, 1)
+    task.delay(3, function()
+        ShowNextCheckpoint:FireClient(player, 1)
+    end)
 end)
 
 Players.PlayerRemoving:Connect(function(player)
@@ -255,7 +267,7 @@ HitItemBox.OnServerEvent:Connect(function(player, boxIndex)
     local box = itemBoxList[boxIndex]
     if not box or box.Transparency >= 0.9 then return end
 
-    local item   = ITEM_TYPES[math.random(1, #ITEM_TYPES)]
+    local item   = ITEM_TYPES[rng:NextInteger(1, #ITEM_TYPES)]
     data.hasItem = true
     ItemPickedUp:FireClient(player, item)
 
