@@ -1,3 +1,5 @@
+-- Roblox: Infernobl1tz - Discord: infernotheguy
+
 local Players           = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RaceState         = require(script.Parent.RaceState)
